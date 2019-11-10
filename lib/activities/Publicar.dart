@@ -141,7 +141,7 @@ class _PublicarState extends State<Publicar> {
     publicacao.projetos = Publicar.projetos;
     publicacao.mecatronica = Publicar.mecatronica;
     publicacao.semRestricoes = Publicar.semRestricoes;
-    
+    publicacao.usuario = Publicar.usuario;
     publicacao.salvarFirebase();
     
   }

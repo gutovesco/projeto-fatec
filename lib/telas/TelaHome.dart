@@ -7,6 +7,9 @@ import 'package:app_teste/model/Usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
+
+import 'TelaListPesquisaTurmas.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -22,6 +25,14 @@ class _HomeState extends State<Home> {
   List<Widget> _listFragments = [HomeHome(), TurmaHome()];
   Future<Usuario> usuario;
   Usuario dadosUsuario;
+
+  String _valuePeriodo;
+  String _valueCurso;
+  String _valueModulo;
+
+  List<String> _dropdownPeriodo = ["Manhã", "Tarde", "Noite"];
+  List<String> _dropdownCurso = ["Ads", "Projetos", "Mecatrônica"];
+  List<String> _dropdownModulo = ["1", "2", "3", "4", "5", "6"];
 
   Future<Usuario> recuperarDados() async {
     FirebaseUser user = await fireAuth.currentUser();
@@ -224,12 +235,99 @@ class _HomeState extends State<Home> {
     if (telaTurma == true) {
       return IconButton(
         icon: Icon(Icons.search),
-        onPressed: () {},
+        onPressed: () {
+          _neverSatisfied();
+        },
       );
     } else {
       return Container();
     }
   }
+
+  Future<void> _neverSatisfied() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Observação"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                DropdownButton(
+                    value: _valuePeriodo,
+                    items: _dropdownPeriodo
+                        .map((value) => DropdownMenuItem(
+                              child: Text(value),
+                              value: value,
+                            ))
+                        .toList(),
+                    onChanged: (String value) {
+                      setState(() {
+                        _valuePeriodo = value;
+                      });
+                      Navigator.of(context).pop();
+                      _neverSatisfied();
+                    },
+                    hint: Text("Selecione o período"),
+                  ),
+                  DropdownButton(
+                    value: _valueCurso,
+                    items: _dropdownCurso
+                        .map((value) => DropdownMenuItem(
+                              child: Text(value),
+                              value: value,
+                            ))
+                        .toList(),
+                    onChanged: (String value) {
+                      setState(() {
+                        _valueCurso = value;
+                      });
+                      Navigator.of(context).pop();
+                      _neverSatisfied();
+                    },
+                    hint: Text("Selecione o curso   "),
+                  ),
+                  DropdownButton(
+                    value: _valueModulo,
+                    items: _dropdownModulo
+                        .map((value) => DropdownMenuItem(
+                              child: Text(value),
+                              value: value,
+                            ))
+                        .toList(),
+                    onChanged: (String value) {
+                      setState(() {
+                        _valueModulo = value;
+                      });
+                      Navigator.of(context).pop();
+                      _neverSatisfied();
+                    },
+                    hint: Text("Selecione o módulo"),
+                  )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Pesquisar"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ListPesquisaTurmas(_valueCurso, _valueModulo, _valuePeriodo)));
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+
 }
 
 class HomeHome extends StatefulWidget {

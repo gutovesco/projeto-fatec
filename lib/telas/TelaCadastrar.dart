@@ -59,8 +59,7 @@ class _CadastroState extends State<Cadastro> {
   }
 
   void msg(String msgErro) {
-    Toast.show(msgErro, context,
-        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    Toast.show(msgErro, context,duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
   }
 
   void cadastrarFirebase(Usuario usuario) {
