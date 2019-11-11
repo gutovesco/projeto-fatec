@@ -4,6 +4,7 @@ import 'package:app_teste/activities/MinhasTurma.dart';
 import 'package:app_teste/activities/Publicar.dart';
 import 'package:app_teste/model/Turma.dart';
 import 'package:app_teste/model/Usuario.dart';
+import 'package:app_teste/telas/TelaHomeTurma.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -255,56 +256,56 @@ class _HomeState extends State<Home> {
             child: ListBody(
               children: <Widget>[
                 DropdownButton(
-                    value: _valuePeriodo,
-                    items: _dropdownPeriodo
-                        .map((value) => DropdownMenuItem(
-                              child: Text(value),
-                              value: value,
-                            ))
-                        .toList(),
-                    onChanged: (String value) {
-                      setState(() {
-                        _valuePeriodo = value;
-                      });
-                      Navigator.of(context).pop();
-                      _neverSatisfied();
-                    },
-                    hint: Text("Selecione o período"),
-                  ),
-                  DropdownButton(
-                    value: _valueCurso,
-                    items: _dropdownCurso
-                        .map((value) => DropdownMenuItem(
-                              child: Text(value),
-                              value: value,
-                            ))
-                        .toList(),
-                    onChanged: (String value) {
-                      setState(() {
-                        _valueCurso = value;
-                      });
-                      Navigator.of(context).pop();
-                      _neverSatisfied();
-                    },
-                    hint: Text("Selecione o curso   "),
-                  ),
-                  DropdownButton(
-                    value: _valueModulo,
-                    items: _dropdownModulo
-                        .map((value) => DropdownMenuItem(
-                              child: Text(value),
-                              value: value,
-                            ))
-                        .toList(),
-                    onChanged: (String value) {
-                      setState(() {
-                        _valueModulo = value;
-                      });
-                      Navigator.of(context).pop();
-                      _neverSatisfied();
-                    },
-                    hint: Text("Selecione o módulo"),
-                  )
+                  value: _valuePeriodo,
+                  items: _dropdownPeriodo
+                      .map((value) => DropdownMenuItem(
+                            child: Text(value),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (String value) {
+                    setState(() {
+                      _valuePeriodo = value;
+                    });
+                    Navigator.of(context).pop();
+                    _neverSatisfied();
+                  },
+                  hint: Text("Selecione o período"),
+                ),
+                DropdownButton(
+                  value: _valueCurso,
+                  items: _dropdownCurso
+                      .map((value) => DropdownMenuItem(
+                            child: Text(value),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (String value) {
+                    setState(() {
+                      _valueCurso = value;
+                    });
+                    Navigator.of(context).pop();
+                    _neverSatisfied();
+                  },
+                  hint: Text("Selecione o curso   "),
+                ),
+                DropdownButton(
+                  value: _valueModulo,
+                  items: _dropdownModulo
+                      .map((value) => DropdownMenuItem(
+                            child: Text(value),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (String value) {
+                    setState(() {
+                      _valueModulo = value;
+                    });
+                    Navigator.of(context).pop();
+                    _neverSatisfied();
+                  },
+                  hint: Text("Selecione o módulo"),
+                )
               ],
             ),
           ),
@@ -318,7 +319,11 @@ class _HomeState extends State<Home> {
             FlatButton(
               child: Text("Pesquisar"),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ListPesquisaTurmas(_valueCurso, _valueModulo, _valuePeriodo)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ListPesquisaTurmas(
+                            _valueCurso, _valueModulo, _valuePeriodo)));
               },
             )
           ],
@@ -326,8 +331,6 @@ class _HomeState extends State<Home> {
       },
     );
   }
-
-
 }
 
 class HomeHome extends StatefulWidget {
@@ -355,19 +358,28 @@ class _TurmaHomeState extends State<TurmaHome> {
     FirebaseUser fireUser = await fireAuth.currentUser();
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
     DatabaseReference dataRef = firebaseDatabase.reference();
-    
+
     List<Turma> listaTurma = List();
 
     var dados = dataRef.child("usuarios").child(fireUser.uid).child("turmas");
 
-    await dados.once().then((DataSnapshot snapshot){
+    await dados.once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> values = snapshot.value;
-      values.forEach((key,values) {
+      values.forEach((key, values) {
+        print(key);
         Turma turma = Turma();
         turma.nomeTurma = values["nomeTurma"];
         turma.periodo = values["periodo"];
         turma.curso = values["curso"];
         turma.modulo = values["modulo"];
+        turma.senha = values["senha"];
+
+        Usuario usuario = Usuario();
+        usuario.nome = values["usuario"]["nome"];
+        usuario.email = values["usuario"]["email"];
+
+        turma.usuario = usuario;
+        turma.idTurma = key;
         listaTurma.add(turma);
       });
     });
@@ -377,49 +389,58 @@ class _TurmaHomeState extends State<TurmaHome> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Turma>>(
-          future: buscarDados(),
-          builder: (context, snapshot){
-          switch(snapshot.connectionState){
-            case ConnectionState.none:
-              break;
-            case ConnectionState.waiting:
+      future: buscarDados(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            break;
+          case ConnectionState.waiting:
             print("executei");
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Carregando..."),
-                    CircularProgressIndicator()
-                  ],
-                ),
-              );
-              break;
-            case ConnectionState.active:
-              break;
-            case ConnectionState.done:
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Carregando..."),
+                  CircularProgressIndicator()
+                ],
+              ),
+            );
+            break;
+          case ConnectionState.active:
+            break;
+          case ConnectionState.done:
             print(snapshot.data);
-              if(snapshot.data == null){
-                return Center(
-                  child: Text("Não foi possível recuperar os dados!"),
-                );
-              }else{
-                return ListView.builder(
+            if (snapshot.data == null) {
+              return Center(
+                child: Text("Não foi possível recuperar os dados!"),
+              );
+            } else {
+              return ListView.builder(
                 itemCount: snapshot.data.length,
-                itemBuilder: (_, indice){
+                itemBuilder: (_, indice) {
                   List<Turma> listTurma = snapshot.data;
-                  
+
                   Turma turma = listTurma[indice];
 
-                  return ListTile(
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
                     title: Text(turma.nomeTurma),
-                    subtitle: Text("Curso: ${turma.curso} | Perído: ${turma.periodo} | Módulo: ${turma.modulo}"),
+                    subtitle: Text(
+                        "Curso: ${turma.curso} | Perído: ${turma.periodo} | Módulo: ${turma.modulo}"),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>TelaHomeTurma(turma)));
+                    },
+                  ),
+                  Divider()
+                    ],
                   );
                 },
               );
-              }
-              break;
-          }
-        },
-      );
+            }
+            break;
+        }
+      },
+    );
   }
 }
