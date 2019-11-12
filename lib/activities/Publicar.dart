@@ -6,7 +6,6 @@ import 'package:toast/toast.dart';
 class Publicar extends StatefulWidget {
   static var titulo = TextEditingController();
   static var descricao = TextEditingController();
-  static var caminhoImagem = "";
   static var data = TextEditingController();
   static var hora = TextEditingController();
 
@@ -181,15 +180,6 @@ class _EditarPublicacaoState extends State<EditarPublicacao> {
             decoration:
                 InputDecoration(labelText: "Horário", hintText: "Ex: 19:30"),
           ),
-          Row(
-            children: <Widget>[
-              RaisedButton(
-                child: Text("Adicionar imagem"),
-                onPressed: () {},
-              ),
-              Text("Nome da imagem")
-            ],
-          ),
           Text("Quem vai receber essa publicação?"),
           CheckboxListTile(
             title: Text("Ads"),
@@ -249,7 +239,6 @@ class VisuliazarPublicacao extends StatefulWidget {
 class _VisuliazarPublicacaoState extends State<VisuliazarPublicacao> {
   var visualizar_Titulo = "";
   var visualizar_Descricao = "";
-  var visualizar_CaminhoImagem = "";
   var visualizar_Data = "";
   var visualizar_Hora = "";
   String conData = "";
@@ -280,14 +269,6 @@ class _VisuliazarPublicacaoState extends State<VisuliazarPublicacao> {
         visualizar_Hora = Publicar.hora.text;
         conHora = " às ";
       });
-    }
-  }
-
-  Widget imagemVisualizar() {
-    if (Publicar.caminhoImagem != null && Publicar.caminhoImagem.isNotEmpty) {
-      return Image.asset("imagens/fundo.png", width: 345);
-    } else {
-      return Container();
     }
   }
 
@@ -324,7 +305,6 @@ class _VisuliazarPublicacaoState extends State<VisuliazarPublicacao> {
               SafeArea(
                 child: Text(visualizar_Descricao),
               ),
-              imagemVisualizar(),
               Divider(),
               Row(
                 children: <Widget>[

@@ -1,6 +1,4 @@
-import 'package:app_teste/activities/CriarTurma.dart';
 import 'package:app_teste/activities/MinhasPublicacoes.dart';
-import 'package:app_teste/activities/MinhasTurma.dart';
 import 'package:app_teste/activities/Publicar.dart';
 import 'package:app_teste/telas/TelaAutenticacao.dart';
 import 'package:app_teste/telas/TelaCadastrar.dart';
@@ -28,9 +26,6 @@ class RouteGenerator {
       );
       case "/publicar" : return MaterialPageRoute(
         builder: (_) => Publicar()
-      );
-      case "/publicar" : return MaterialPageRoute(
-        builder: (_) => MinhasTurmas()
       );
       case "/minhasPublicacoes" : return MaterialPageRoute(
         builder: (_) => MinhasPublicacoes()
