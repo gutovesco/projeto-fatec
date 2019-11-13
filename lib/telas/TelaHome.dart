@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: myBottomBar(),
       body: Center(
-        child: HomeHome(),
+        child: HomeHome(dadosUsuario),
       ),
     );
   }
@@ -181,11 +181,17 @@ class _HomeState extends State<Home> {
 }
 
 class HomeHome extends StatefulWidget {
+
+  Usuario usuario;
+
+  HomeHome(this.usuario);
+
   @override
   _HomeHomeState createState() => _HomeHomeState();
 }
 
 class _HomeHomeState extends State<HomeHome> {
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Publicacao>>(
@@ -221,6 +227,30 @@ class _HomeHomeState extends State<HomeHome> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (_, indice) {
+                  
+                  String conData = "";
+                  String conHora = "";
+                  String conDescricao = "";
+                  String urlImagem = "";
+
+                  var _data = false;
+                  var _descricao = false;
+                  var _urlImagem = false;
+
+                  Publicacao publicacao = snapshot.data[indice];
+                  String conTitulo = publicacao.titulo;
+
+                  if(publicacao.hora != null && publicacao.hora.isNotEmpty){
+                      _data = true;
+                      conHora = " às " + publicacao.hora;
+                      conData = publicacao.data;
+                  }
+
+                  if(publicacao.descricao != null && publicacao.descricao.isNotEmpty){
+                    _descricao = true;
+                    conDescricao = publicacao.descricao;
+                  }
+
                   return Padding(
                     padding: EdgeInsets.fromLTRB(2, 2, 2, 5),
                     child: Card(
@@ -230,7 +260,7 @@ class _HomeHomeState extends State<HomeHome> {
                           children: <Widget>[
                             Visibility(
                               visible: true,
-                              child: Text("Titulo"),
+                              child: Text(conTitulo),
                             ),
                             Row(
                               children: <Widget>[
@@ -244,33 +274,33 @@ class _HomeHomeState extends State<HomeHome> {
                                 ),
                                 Visibility(
                                   visible: true,
-                                  child: Text("Nome do professor"),
+                                  child: Text(publicacao.usuario.nome),
                                 )
                               ],
                             ),
                             Visibility(
-                              visible: true,
+                              visible: _descricao,
                               child: Divider(),
                             ),
                             Visibility(
-                              visible: true,
+                              visible: _descricao,
                               child: SafeArea(
-                                child: Text("Descricao"),
+                                child: Text(conDescricao),
                               ),
                             ),
                             Visibility(
-                              visible: true,
+                              visible: _data,
                               child: Divider(),
                             ),
                             Row(
                               children: <Widget>[
                                 Visibility(
-                                  visible: true,
-                                  child: Text("22/05"),
+                                  visible: _data,
+                                  child: Text(conData),
                                 ),
                                 Visibility(
-                                  visible: true,
-                                  child: Text(" às 19:30"),
+                                  visible: _data,
+                                  child: Text(conHora),
                                 )
                               ],
                             ),
@@ -289,7 +319,30 @@ class _HomeHomeState extends State<HomeHome> {
   Future<List<Publicacao>> buscarDadosPublicacao() async {
     List<Publicacao> listPublicacoes = List();
 
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+    DatabaseReference dataRef = firebaseDatabase.reference();
 
+    var dados = dataRef.child("publicacoes").child("curso").child("periodo");
+
+    await dados.once().then((DataSnapshot snapshot){
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach((key,values) {
+        Publicacao publicacao = Publicacao();
+        publicacao.titulo = values["titulo"];
+        publicacao.descricao = values["descricao"];
+        publicacao.data = values["data"];
+        publicacao.hora = values["hora"];
+
+        Usuario usuario = Usuario();
+        usuario.nome = values["usuario"]["nome"];
+        usuario.email = values["usuario"]["email"];
+
+        publicacao.usuario = usuario;
+
+
+        listPublicacoes.add(publicacao);
+      });
+    });
 
     return listPublicacoes;
   }

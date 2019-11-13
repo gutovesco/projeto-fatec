@@ -152,6 +152,52 @@ class EditarPublicacao extends StatefulWidget {
 }
 
 class _EditarPublicacaoState extends State<EditarPublicacao> {
+
+  String tipoUser = Publicar.usuario.tipoUsuario;
+  var checkAds = false;
+  var checkProjetos = false;
+  var checkMecatronica = false;
+  var checkSemRestricoes = false;
+
+  void verificarAcessoCheckBox(){
+
+    if(tipoUser == "Diretor" || tipoUser == "Coordenacao"){
+       setState(() {
+        checkAds = true;
+        checkProjetos = true;
+        checkMecatronica = true;
+        checkSemRestricoes = true;
+      });
+    }
+
+    if(tipoUser == "Professor"){
+      String professorMateria = Publicar.usuario.professorMateria;
+      if(professorMateria == "ADS"){
+        setState(() {
+          checkAds = true;
+        });
+      }else if(professorMateria == "PRJ"){
+        setState(() {
+          checkProjetos = true;
+        });
+      }else if(professorMateria == "MEC"){
+        setState(() {
+          checkMecatronica = true;
+        });
+      }
+    }
+
+
+
+  }
+
+  @override
+  void initState() {
+    
+    verificarAcessoCheckBox();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -181,7 +227,10 @@ class _EditarPublicacaoState extends State<EditarPublicacao> {
                 InputDecoration(labelText: "Horário", hintText: "Ex: 19:30"),
           ),
           Text("Quem vai receber essa publicação?"),
-          CheckboxListTile(
+
+          Visibility(
+            visible: checkAds,
+            child: CheckboxListTile(
             title: Text("Ads"),
             value: Publicar.ads,
             onChanged: (bool resultado) {
@@ -190,7 +239,10 @@ class _EditarPublicacaoState extends State<EditarPublicacao> {
               });
             },
           ),
-          CheckboxListTile(
+          ),
+          Visibility(
+            visible: checkProjetos,
+            child: CheckboxListTile(
             title: Text("Projetos"),
             value: Publicar.projetos,
             onChanged: (bool resultado) {
@@ -199,7 +251,10 @@ class _EditarPublicacaoState extends State<EditarPublicacao> {
               });
             },
           ),
-          CheckboxListTile(
+          ),
+          Visibility(
+            visible: true,
+            child: CheckboxListTile(
             title: Text("Mecatrônica"),
             value: Publicar.mecatronica,
             onChanged: (bool resultado) {
@@ -208,18 +263,24 @@ class _EditarPublicacaoState extends State<EditarPublicacao> {
               });
             },
           ),
-          CheckboxListTile(
+          ),
+          Visibility(
+            visible: true,
+            child: CheckboxListTile(
             title: Text("Sem restrições"),
             subtitle: Text("Todos podem visualizar está publicação"),
             value: Publicar.semRestricoes,
             onChanged: (bool resultado) {
               semRestricoes(resultado);
             },
+          ),
           )
+          
         ],
       ),
     );
   }
+
 
   void semRestricoes(bool resultado) {
     setState(() {

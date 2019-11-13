@@ -1,7 +1,4 @@
 
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -14,6 +11,10 @@ class Usuario {
   String _tipoUsuario;
   String _idUsuario;
   String _curso;
+  String _modulo;
+  String _periodo;
+  String _professorMateria;
+  
 
   Future<bool> cadastrarFireBase()async{
 
@@ -34,6 +35,24 @@ class Usuario {
       dados
     );
       
+  }
+
+  String get professorMateria => _professorMateria;
+
+  set professorMateria(String professorMateria) {
+    _professorMateria = professorMateria;
+  }
+
+  String get periodo => _periodo;
+
+  set periodo(String periodo) {
+    _periodo = periodo;
+  }
+
+  String get modulo => _modulo;
+
+  set modulo(String modulo) {
+    _modulo = modulo;
   }
 
   String get curso => _curso;
