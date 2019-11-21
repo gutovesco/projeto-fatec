@@ -1,16 +1,11 @@
-# app_teste
+# Projeto em desenvolvimento
 
-A new Flutter project.
+- Este projeto está sendo desenvolvido em parceria com a Fatec de Mogi Mirim.
+- O objetivo deste projeto é manter uma comunicação eficaz entre os alunos e coordenação.
+- O projeto é código aberto sendo assim qualquer um pode contribuir com melhorias e sugestões.
 
-## Getting Started
+# Tecnologia 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- O aplicativo está sendo desenvolvido para Ios/Android.
+- Linguagem Dart.
+- Framework Flutter(Com um único código o aplicativo pode rodar em Ios/Android).
